@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { postHandler, getHandler } from './controller';
+import { signupHandler, loginHandler, publishToken } from './controller';
 
 const router = Router();
 
-router.post('/login', postHandler);
-router.get('/:user', getHandler);
+router.get('/login', loginHandler);
+router.get('/login/complete', loginHandler, publishToken);
 
 export default router;

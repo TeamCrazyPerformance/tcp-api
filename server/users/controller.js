@@ -1,17 +1,30 @@
-import db from '../config/database';
+import passport from '../auth/passport';
+import { generateJwt } from '../auth';
 
-const postHandler = (req, res) => {
-  const { User } = db;
-
-  const { email, name } = req.body;
-  User.create({ email, name })
-    .then(domain => res.send(domain))
-    .catch(() => res.sendStatus(500));
+const CLIENT_URI = process.env.CLIENT_URI;
+const STRATEGY = 'github';
+const COOKIE_NAME = 'jwt';
+const COOKIE_OPTION = {
+  maxAge: 1 * 60 * 60 * 1000, // 1시간
+  httpOnly: true,
 };
 
-const getHandler = (req, res) => {
+const loginHandler = (req, res, next) => {
+  passport.authenticate(STRATEGY, {
+    failureRedirect: `${CLIENT_URI}/login`,
+  })(req, res, next);
+};
+
+const publishToken = (req, res) => {
   const { user } = req;
-  res.send(user);
+
+  const token = generateJwt(user);
+
+  const isExistUser = req.user ? req.user.exist : false;
+
+  res.cookie(COOKIE_NAME, token, COOKIE_OPTION);
+
+  res.redirect(isExistUser ? CLIENT_URI : `${CLIENT_URI}/signup`);
 };
 
-export { postHandler, getHandler };
+export { loginHandler, publishToken };
