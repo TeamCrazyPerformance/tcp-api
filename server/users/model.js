@@ -10,7 +10,7 @@ function user(sequelize) {
       phone: DataTypes.STRING(40),
       birth: DataTypes.STRING(15),
       email: DataTypes.STRING(40),
-      name: DataTypes.STRING(15),
+      username: DataTypes.STRING(15),
       blog: DataTypes.STRING(100),
       avatar: DataTypes.STRING,
       githubId: DataTypes.STRING(30),
@@ -29,12 +29,12 @@ function user(sequelize) {
   };
 
   User.prototype.getProfile = function(exist) {
-    const { id, avatar, name, blog, email } = this;
+    const { id, avatar, username, blog, email } = this;
 
     return {
       id,
       avatar,
-      name,
+      username,
       exist,
       blog,
       email,
@@ -43,6 +43,31 @@ function user(sequelize) {
 
   User.save = async function(where) {
     return await User.findOrCreate({ where });
+  };
+
+  User.updateInfo = async function(user) {
+    const {
+      id,
+      grade,
+      schoolRegister,
+      phone,
+      birth,
+      email,
+      username,
+      blog,
+    } = user;
+    const where = { id };
+    const value = {
+      grade,
+      schoolRegister,
+      phone,
+      birth,
+      email,
+      username,
+      blog,
+    };
+
+    return await User.update(value, { where });
   };
 
   return User;

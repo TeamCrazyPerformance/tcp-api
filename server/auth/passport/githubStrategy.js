@@ -2,14 +2,22 @@ import { Strategy as GitHubStrategy } from 'passport-github';
 import { passportConfig, database as db } from '../../config';
 
 const extractProfile = profile => {
-  const { id, photos, email = '', username, blog = '' } = profile;
+  const { id: githubId, username: githubUsername, _json } = profile;
+
+  const {
+    blog = '',
+    email = '',
+    bio: username = '',
+    avatar_url: avatar,
+  } = _json;
 
   return {
-    githubId: id,
-    avatar: photos[0].value,
+    githubId,
+    avatar,
     email,
+    username,
     blog,
-    githubUsername: username,
+    githubUsername,
   };
 };
 
