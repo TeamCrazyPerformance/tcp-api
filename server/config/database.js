@@ -15,7 +15,7 @@ const db = {
       .authenticate()
       .then(async () => {
         Console.log('⭕️ Connection has been established successfully.');
-        await this.sequelize.sync({ force: true });
+        await this.sequelize.sync();
       })
       .catch(err => {
         Console.error('❌  Unable to connect to the database:', err);
