@@ -11,13 +11,12 @@ export const generateJwt = payload => {
 };
 
 export default (req, _, next) => {
-  const token = req.cookies.jwt;
+  const token = req.headers.authorization;
 
-  jwt
-    .verify(token, JWT_SECRET)
-    .then(decoded => {
-      req.user = decoded;
-      next();
-    })
-    .catch(err => next(err));
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) next(err);
+
+    req.user = decoded;
+    next();
+  });
 };
