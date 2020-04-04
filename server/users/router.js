@@ -1,9 +1,19 @@
 import { Router } from 'express';
-import { postHandler, getHandler } from './controller';
+import {
+  signUpHandler,
+  loginHandler,
+  publishToken,
+  getUserHandler,
+} from './controller';
+import authHandler from '../auth';
 
 const router = Router();
 
-router.post('/login', postHandler);
-router.get('/:user', getHandler);
+router.get('/login', loginHandler);
+router.get('/login/complete', loginHandler, publishToken);
+
+router.use(authHandler);
+router.post('/', signupHandler);
+router.get('/:id', getUserHandler);
 
 export default router;

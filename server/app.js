@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { router, database, corsOptions } from './config';
 import passport from './auth/passport';
 import { Console } from './utils';
@@ -11,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 app.use(morgan('dev'));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
