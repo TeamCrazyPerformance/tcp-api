@@ -30,12 +30,12 @@ export default passport => {
       try {
         let user = await User.getUserByGithub(id);
 
-        if (user) return done(null, user.getProfile(true));
+        if (user) return done(null, user.getAuthToken());
 
         const [savedUser, created] = await User.save(extractProfile(profile));
         if (!created) return done(null, false);
 
-        return done(null, savedUser.getProfile(false));
+        return done(null, savedUser.getProfile(true));
       } catch (error) {
         console.log(error);
         return done(error);

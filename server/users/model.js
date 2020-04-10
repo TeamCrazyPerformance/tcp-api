@@ -28,16 +28,31 @@ function user(sequelize) {
     return user;
   };
 
-  User.prototype.getProfile = function(exist) {
-    const { id, avatar, username, blog, email } = this;
+  User.prototype.getAuthToken = function() {
+    const { id, avatar, username, githubUsername: github } = this;
+    const token = generateJwt({ id, github });
+    return {
+      id,
+      avatar,
+      username,
+      github,
+      token,
+    };
+  };
+
+  User.prototype.getProfile = function(needSignup) {
+    const { id, avatar, username, blog, email, githubUsername: github } = this;
+    const token = generateJwt({ id, needSignup });
 
     return {
       id,
       avatar,
       username,
-      exist,
+      github,
       blog,
       email,
+      needSignup,
+      token,
     };
   };
 

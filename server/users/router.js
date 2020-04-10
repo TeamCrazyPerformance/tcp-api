@@ -13,7 +13,7 @@ router.get('/login', loginHandler);
 router.get('/login/complete', loginHandler, publishToken);
 
 router.use(authHandler);
-router.post('/', signupHandler);
+router.post('/', signUpHandler);
 router.get('/:id', getUserHandler);
 
 export default router;
