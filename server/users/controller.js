@@ -1,5 +1,4 @@
 import passport from '../auth/passport';
-import { generateJwt } from '../auth';
 import { database as db } from '../config';
 import { makeQuery } from '../utils';
 
@@ -12,17 +11,17 @@ const loginHandler = (req, res, next) => {
   })(req, res, next);
 };
 
-const getUserHandler = (req, res) => {
+const sendUserHandler = (req, res) => {
+  const { User } = db;
   const { user } = req;
 
-  const token = generateJwt(user);
+  const where = { id: user.id };
 
-  res.json({
-    user: {
-      ...user,
-      token,
-    },
-  });
+  User.findOne({ where }).then(user =>
+    res.status(200).json({
+      user: user.getAuthToken(),
+    }),
+  );
 };
 
 const publishToken = (req, res) => {
@@ -34,7 +33,7 @@ const publishToken = (req, res) => {
   res.redirect(path);
 };
 
-const signUpHandler = (req, res) => {
+const signUpHandler = (req, res, next) => {
   if (!req.user.needSignup)
     return res.status(404).send({ message: 'Cannot Signup' });
 
@@ -44,14 +43,8 @@ const signUpHandler = (req, res) => {
   User.updateInfo(user).then(([result]) => {
     if (!result) return res.status(404).send({ message: 'Cannot Signup' });
 
-    const where = { id: user.id };
-
-    User.findOne({ where }).then(user =>
-      res.status(201).json({
-        user: user.getAuthToken(),
-      }),
-    );
+    next();
   });
 };
 
-export { loginHandler, publishToken, signUpHandler, getUserHandler };
+export { loginHandler, publishToken, signUpHandler, sendUserHandler };
