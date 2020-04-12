@@ -5,10 +5,14 @@
   "license": "MIT",
   "scripts": {
     "start:dev": "NODE_ENV=development nodemon --exec babel-node server/app.js",
-    "start:prod": "NODE_ENV=production nodemon --exec babel-node server/app.js"
+    "start:prod": "NODE_ENV=production nodemon --exec babel-node server/app.js",
+    "seed": "NODE_ENV=development npx babel-node ./node_modules/.bin/sequelize db:seed:all",
+    "seed:undo": "NODE_ENV=development npx babel-node ./node_modules/.bin/sequelize db:seed:undo:all",
+    "sequelize": "NODE_ENV=development npx babel-node ./node_modules/.bin/sequelize $*"
   },
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
+    "@babel/register": "^7.9.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -29,11 +33,7 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "nodemon": "^2.0.2",
-    "prettier": "^1.19.1"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
+    "prettier": "^1.19.1",
+    "sequelize-cli": "^5.5.1"
   }
 }

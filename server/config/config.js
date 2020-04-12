@@ -13,13 +13,15 @@ const {
   GITHUB_REDIRECT_URI,
 } = process.env;
 
-export const dbConfig = () => ({
+export const dbConfig = {
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_DATABASE,
   host: DB_HOST,
   dialect: 'mysql',
-});
+};
+
+export const development = dbConfig;
 
 export const passportConfig = () => ({
   clientID: GITHUB_CLIENT_ID,
