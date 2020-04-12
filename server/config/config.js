@@ -2,6 +2,7 @@ import path from 'path';
 import { config } from 'dotenv';
 
 config({ path: path.join(__dirname, `../../.env.${process.env.NODE_ENV}`) });
+config({ path: path.join(__dirname, `../../db/.env.${process.env.NODE_ENV}`) });
 
 const {
   DB_USER,
