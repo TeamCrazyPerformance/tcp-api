@@ -6,6 +6,8 @@
   "scripts": {
     "start:dev": "NODE_ENV=development nodemon --exec babel-node server/app.js",
     "start:prod": "NODE_ENV=production nodemon --exec babel-node server/app.js",
+    "seed": "NODE_ENV=development npx babel-node ./node_modules/.bin/sequelize db:seed:all",
+    "seed:undo": "NODE_ENV=development npx babel-node ./node_modules/.bin/sequelize db:seed:undo:all",
     "sequelize": "NODE_ENV=development npx babel-node ./node_modules/.bin/sequelize $*"
   },
   "dependencies": {
