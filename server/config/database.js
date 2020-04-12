@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { dbConfig } from './configs';
+import { dbConfig } from './config';
 import { Console } from '../utils';
 import Users from '../users/model';
 import Articles from '../articles/model';
@@ -14,7 +14,7 @@ const db = {
   Category: null,
 
   async connect() {
-    const sequelize = new Sequelize(dbConfig());
+    const sequelize = new Sequelize(dbConfig);
     this.sequelize = sequelize;
     this.User = Users(sequelize);
     this.Article = Articles(sequelize);
