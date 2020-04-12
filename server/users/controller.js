@@ -1,6 +1,6 @@
+import qs from 'qs';
 import passport from '../auth/passport';
 import { database as db } from '../config';
-import { makeQuery } from '../utils';
 
 const CLIENT_URI = process.env.CLIENT_URI;
 const STRATEGY = 'github';
@@ -27,7 +27,7 @@ const sendUserHandler = (req, res) => {
 const publishToken = (req, res) => {
   const { user } = req;
   const { needSignup } = user;
-  const query = makeQuery(user);
+  const query = qs.stringify(user);
   const path = `${CLIENT_URI}${needSignup ? '/signup?' : '/redirect?'}${query}`;
 
   res.redirect(path);
