@@ -1,15 +1,59 @@
 import { Sequelize } from 'sequelize';
 import { dbConfig } from './configs';
 import { Console } from '../utils';
-import User from '../users/model';
+import Users from '../users/model';
+import Articles from '../articles/model';
+import Comments from '../articles/comments/model';
+import Categorys from '../articles/categorys/model';
 
 const db = {
   sequelize: null,
   User: null,
+  Article: null,
+  Comment: null,
+  Category: null,
 
   async connect() {
-    this.sequelize = new Sequelize(dbConfig());
-    this.User = User(this.sequelize);
+    const sequelize = new Sequelize(dbConfig());
+    this.sequelize = sequelize;
+    this.User = Users(sequelize);
+    this.Article = Articles(sequelize);
+    this.Comment = Comments(sequelize);
+    this.Category = Categorys(sequelize);
+
+    const { User, Article, Comment, Category } = this;
+
+    User.hasMany(Article, {
+      foreignKey: 'author',
+    });
+    Article.belongsTo(User, {
+      foreignKey: 'author',
+    });
+
+    User.hasMany(Comment, {
+      foreignKey: 'author',
+    });
+    Comment.belongsTo(User, {
+      foreignKey: 'author',
+    });
+
+    Category.hasMany(Article, {
+      foreignKey: 'categoryId',
+    });
+    Article.belongsTo(Category, {
+      foreignKey: 'categoryId',
+    });
+
+    Category.belongsTo(Category, {
+      foreignKey: 'parent',
+    });
+
+    Article.hasMany(Comment, {
+      foreignKey: 'articleId',
+    });
+    Comment.belongsTo(Article, {
+      foreignKey: 'articleId',
+    });
 
     this.sequelize
       .authenticate()

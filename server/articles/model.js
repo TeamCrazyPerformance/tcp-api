@@ -4,7 +4,7 @@ function article(sequelize) {
   const Article = sequelize.define(
     'article',
     {
-      title: DataTypes.INTEGER,
+      title: DataTypes.STRING(100),
       contents: DataTypes.TEXT,
       viewCount: DataTypes.INTEGER,
     },
