@@ -1,13 +1,9 @@
+import qs from 'qs';
 import passport from '../auth/passport';
-import { generateJwt } from '../auth';
 import { database as db } from '../config';
 
 const CLIENT_URI = process.env.CLIENT_URI;
 const STRATEGY = 'github';
-const COOKIE_NAME = 'jwt';
-const COOKIE_OPTION = {
-  maxAge: 1 * 60 * 60 * 1000, // 1시간
-};
 
 const loginHandler = (req, res, next) => {
   passport.authenticate(STRATEGY, {
@@ -15,50 +11,40 @@ const loginHandler = (req, res, next) => {
   })(req, res, next);
 };
 
-const getUserHandler = (req, res) => {
+const sendUserHandler = (req, res) => {
+  const { User } = db;
   const { user } = req;
 
-  delete user.iat;
-  delete user.exp;
+  const where = { id: user.id };
 
-  const token = generateJwt(user);
-
-  res.clearCookie(COOKIE_NAME).json({
-    user: {
-      ...user,
-      token,
-    },
-  });
+  User.findOne({ where }).then(user =>
+    res.status(200).json({
+      user: user.getAuthToken(),
+    }),
+  );
 };
 
 const publishToken = (req, res) => {
   const { user } = req;
-  const token = generateJwt(user);
-  const isExistUser = req.user.exist;
+  const { needSignup } = user;
+  const query = qs.stringify(user);
+  const path = `${CLIENT_URI}${needSignup ? '/signup?' : '/redirect?'}${query}`;
 
-  res
-    .cookie(COOKIE_NAME, token, COOKIE_OPTION)
-    .redirect(isExistUser ? CLIENT_URI : `${CLIENT_URI}/signup`);
+  res.redirect(path);
 };
 
-const signUpHandler = (req, res) => {
-  if (req.user.exist) return res.status(404).send({ message: 'Cannot Signup' });
+const signUpHandler = (req, res, next) => {
+  if (!req.user.needSignup)
+    return res.status(404).send({ message: 'Cannot Signup' });
+
   const { User } = db;
   const { user } = req.body;
 
   User.updateInfo(user).then(([result]) => {
     if (!result) return res.status(404).send({ message: 'Cannot Signup' });
 
-    const { id, avatar, name } = user;
-    const token = generateJwt({ id, avatar, name });
-
-    res
-      .cookie(COOKIE_NAME, token, COOKIE_OPTION)
-      .status(201)
-      .json({
-        user: { ...user, token },
-      });
+    next();
   });
 };
 
-export { loginHandler, publishToken, signUpHandler, getUserHandler };
+export { loginHandler, publishToken, signUpHandler, sendUserHandler };

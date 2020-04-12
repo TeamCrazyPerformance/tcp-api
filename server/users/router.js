@@ -3,7 +3,7 @@ import {
   signUpHandler,
   loginHandler,
   publishToken,
-  getUserHandler,
+  sendUserHandler,
 } from './controller';
 import authHandler from '../auth';
 
@@ -13,7 +13,6 @@ router.get('/login', loginHandler);
 router.get('/login/complete', loginHandler, publishToken);
 
 router.use(authHandler);
-router.post('/', signupHandler);
-router.get('/:id', getUserHandler);
+router.post('/', signUpHandler, sendUserHandler);
 
 export default router;
