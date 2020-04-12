@@ -16,10 +16,23 @@
 yarn install
 ```
 
-## Usage
+### devlopment
+
+#### database
 
 ```sh
-yarn start
+cd db
+docker-compose up -d
+# Adminer link is http://localhost:9012.
+```
+
+## Usage
+
+### devlopment
+
+```sh
+yarn start:dev
+yarn seed # add seed data
 ```
 
 ## Author
