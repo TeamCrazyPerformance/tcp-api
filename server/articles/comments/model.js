@@ -13,6 +13,17 @@ function comment(sequelize) {
     },
   );
 
+  Comment.prototype.extract = function(options) {
+    const { id, contents, createdAt, updatedAt } = this;
+    return {
+      id,
+      contents,
+      createdAt,
+      updatedAt,
+      ...options,
+    };
+  };
+
   return Comment;
 }
 
