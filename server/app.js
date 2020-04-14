@@ -4,9 +4,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { router, database, corsOptions } from './config';
 import passport from './auth/passport';
-import { Console } from './utils';
 
-database.connect();
+database.connect({ logging: false });
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -20,6 +19,10 @@ app.use(cors(corsOptions));
 
 app.use('/api', router);
 
-app.listen(PORT, () => {
-  Console.log(`${PORT}번 listen!`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`${PORT}번 listen!`);
+  });
+}
+
+export default app;
