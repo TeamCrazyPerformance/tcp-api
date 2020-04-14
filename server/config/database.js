@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize';
 import { dbConfig } from './config';
-import { Console } from '../utils';
 import Users from '../users/model';
 import Articles from '../articles/model';
 import Comments from '../articles/comments/model';
@@ -13,8 +12,8 @@ const db = {
   Comment: null,
   Category: null,
 
-  async connect() {
-    const sequelize = new Sequelize(dbConfig);
+  async connect(options) {
+    const sequelize = new Sequelize({ ...dbConfig, ...options });
     this.sequelize = sequelize;
     this.User = Users(sequelize);
     this.Article = Articles(sequelize);
@@ -58,11 +57,11 @@ const db = {
     this.sequelize
       .authenticate()
       .then(async () => {
-        Console.log('⭕️ Connection has been established successfully.');
+        console.log('⭕️ Connection has been established successfully.');
         await this.sequelize.sync();
       })
       .catch(err => {
-        Console.error('❌  Unable to connect to the database:', err);
+        console.error('❌  Unable to connect to the database:', err);
       });
 
     return db;
