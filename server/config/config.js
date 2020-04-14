@@ -18,10 +18,14 @@ export const dbConfig = {
   password: DB_PASSWORD,
   database: DB_DATABASE,
   host: DB_HOST,
-  dialect: 'mysql',
+  dialect: 'mariadb',
+  dialectOptions: {
+    timezone: 'Etc/GMT+9',
+  },
 };
 
 export const development = dbConfig;
+export const test = dbConfig;
 
 export const passportConfig = () => ({
   clientID: GITHUB_CLIENT_ID,
