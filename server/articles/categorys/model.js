@@ -13,6 +13,13 @@ function category(sequelize) {
     },
   );
 
+  Category.getCategory = async function(name) {
+    const where = { name };
+    const category = await Category.findOne({ where });
+
+    return category;
+  };
+
   return Category;
 }
 
