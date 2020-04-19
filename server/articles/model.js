@@ -24,25 +24,33 @@ function article(sequelize) {
     categoryName = DEFAULT_CATEGORY,
     { limit = DEFAULT_LIMIT, offset = DEFUALT_OFFSET },
   ) {
-    const { Category } = db;
+    const category = await db.Category.getCategory(categoryName);
+    const articles = await category
+      .getArticles({
+        limit: parseInt(limit, 10),
+        offset: parseInt(offset, 10),
+      })
+      .then(articles =>
+        Promise.all(
+          articles.map(async article => {
+            const [author, comments] = await Promise.all([
+              article.getUser(),
+              article.getComments(),
+            ]);
+            return article.extract(false, {
+              author: author.username,
+              commentCount: comments.length,
+            });
+          }),
+        ),
+      );
 
-    const category = await Category.getCategory(categoryName);
-    const articles = await category.getArticles({
-      limit: parseInt(limit, 10),
-      offset: parseInt(offset, 10),
+    const where = { categoryId: category.id };
+    const articleCounts = await db.Article.count({
+      where,
     });
-    return Promise.all(
-      articles.map(async article => {
-        const [author, comments] = await Promise.all([
-          article.getUser(),
-          article.getComments(),
-        ]);
-        return article.extract(false, {
-          author: author.username,
-          commentCounts: comments.length,
-        });
-      }),
-    );
+
+    return [articles, articleCounts];
   };
 
   Article.prototype.adaptComment = async function() {
