@@ -1,8 +1,24 @@
 import { database as db } from '../../config';
 
+const sortCategory = categories => {
+  return categories.reduce((acc, { id, name, parent: pid }) => {
+    const cur = { id, name };
+    if (!pid) return [...acc, cur];
+
+    const parent = acc.find(item => item.id === pid);
+    const remind = acc.filter(item => item.id !== pid);
+    const subItems = parent.subItems ? [...parent.subItems, cur] : [cur];
+
+    return [...remind, { ...parent, subItems }];
+  }, []);
+};
+
 export const getCategories = (_, res, next) => {
   return db.Category.findAll()
-    .then(categories => res.send({ categories }))
+    .then(unSortedcategories => {
+      const categories = sortCategory(unSortedcategories);
+      return res.send({ categories });
+    })
     .catch(err => next(err));
 };
 
