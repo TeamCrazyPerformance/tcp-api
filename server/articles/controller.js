@@ -34,12 +34,14 @@ const getArticles = (req, res) => {
   });
 };
 
-const getArticle = (req, res) => {
+const getArticle = async (req, res) => {
   const { article } = req;
 
+  const author = (await article.getUser()).getProfile();
+
   article.adaptComment().then(comments => {
-    const data = article.extract(true, { comments });
-    res.send({ article: data });
+    const data = article.extract(true);
+    res.send({ article: { ...data, author }, comments });
   });
 };
 

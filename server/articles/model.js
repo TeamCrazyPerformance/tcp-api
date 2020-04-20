@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { database as db } from '../config';
 
-const DEFAULT_CATEGORY = '회의록';
+const DEFAULT_CATEGORY = 1;
 const DEFAULT_LIMIT = 10;
 const DEFUALT_OFFSET = 0;
 
@@ -21,10 +21,10 @@ function article(sequelize) {
   );
 
   Article.filterCategory = async function(
-    categoryName = DEFAULT_CATEGORY,
+    categoryId = DEFAULT_CATEGORY,
     { limit = DEFAULT_LIMIT, offset = DEFUALT_OFFSET },
   ) {
-    const category = await db.Category.getCategory(categoryName);
+    const category = await db.Category.findByPk(categoryId);
     const articles = await category
       .getArticles({
         limit: parseInt(limit, 10),
@@ -60,7 +60,7 @@ function article(sequelize) {
       comments.map(async comment => {
         const author = await comment.getUser();
         return comment.extract({
-          author: author.username,
+          author: author.getProfile(),
         });
       }),
     );
