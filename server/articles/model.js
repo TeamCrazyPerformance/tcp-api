@@ -53,6 +53,11 @@ function article(sequelize) {
     return [articles, articleCounts];
   };
 
+  Article.prototype.updateViewCount = async function() {
+    const viewCount = this.viewCount + 1;
+    await this.update({ viewCount });
+  };
+
   Article.prototype.adaptComment = async function() {
     const comments = await this.getComments();
 
