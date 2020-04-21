@@ -36,8 +36,9 @@ const getArticles = (req, res) => {
 
 const getArticle = async (req, res) => {
   const { article } = req;
-
   const author = (await article.getUser()).getProfile();
+
+  await article.updateViewCount();
 
   article.adaptComment().then(comments => {
     const data = article.extract(true);
