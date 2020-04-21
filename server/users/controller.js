@@ -19,7 +19,7 @@ const sendUserHandler = (req, res) => {
 
   User.findOne({ where }).then(user =>
     res.status(200).json({
-      user: user.getAuthToken(),
+      user: user.getProfile(true),
     }),
   );
 };

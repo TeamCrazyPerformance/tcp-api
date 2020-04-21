@@ -28,9 +28,9 @@ function user(sequelize) {
     return user;
   };
 
-  User.prototype.getAuthToken = function() {
+  User.prototype.getProfile = function(needToken) {
     const { id, avatar, username, githubUsername: github } = this;
-    const token = generateJwt({ id, github });
+    const token = needToken ? generateJwt({ id, github }) : undefined;
     return {
       id,
       avatar,
@@ -40,7 +40,7 @@ function user(sequelize) {
     };
   };
 
-  User.prototype.getProfile = function(needSignup) {
+  User.prototype.getUserInfo = function(needSignup) {
     const { id, avatar, username, blog, email, githubUsername: github } = this;
     const token = generateJwt({ id, needSignup });
 
