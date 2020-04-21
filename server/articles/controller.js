@@ -22,6 +22,26 @@ const articleAuth = (req, res, next) => {
   next();
 };
 
+const createArticle = async (req, res, next) => {
+  const {
+    user,
+    body: { article, category: categoryId },
+  } = req;
+
+  const category = await db.Category.findByPk(categoryId);
+
+  if (!(article.contents && article.title && category))
+    return res.sendStatus(400);
+
+  return db.Article.create(article)
+    .then(article => {
+      article.setUser(user.id);
+      article.setCategory(category);
+      return res.status(205).send({ article });
+    })
+    .catch(err => next(err));
+};
+
 const getArticles = (req, res) => {
   const { category, limit, offset } = req.query;
   const { Article } = db;
@@ -71,6 +91,7 @@ const deleteArticle = (req, res, next) => {
 export {
   getArticles,
   getArticle,
+  createArticle,
   modifyArticle,
   preloadArticle,
   deleteArticle,
