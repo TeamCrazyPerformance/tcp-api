@@ -5,12 +5,16 @@ import commentRouter from './comments/router';
 
 const router = Router();
 
-router.get('/', ctrl.getArticles);
+router
+  .route('/')
+  .get(ctrl.getArticles)
+  .post(authHandler, ctrl.createArticle);
+
 router.param('articleId', ctrl.preloadArticle);
 
-router.use(authHandler);
 router
   .route('/:articleId')
+  .all(authHandler)
   .get(ctrl.getArticle)
   .patch(ctrl.articleAuth, ctrl.modifyArticle)
   .delete(ctrl.articleAuth, ctrl.deleteArticle);

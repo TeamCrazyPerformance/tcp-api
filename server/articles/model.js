@@ -11,7 +11,10 @@ function article(sequelize) {
     {
       title: DataTypes.STRING(100),
       contents: DataTypes.TEXT,
-      viewCount: DataTypes.INTEGER,
+      viewCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
     },
     {
       timestamps: true,
