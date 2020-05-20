@@ -19,6 +19,6 @@ router
   .patch(ctrl.articleAuth, ctrl.modifyArticle)
   .delete(ctrl.articleAuth, ctrl.deleteArticle);
 
-router.use('/:articleId/comments', commentRouter);
+router.use('/:articleId/comments', authHandler, commentRouter);
 
 export default router;

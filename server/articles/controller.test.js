@@ -32,7 +32,7 @@ describe('POST /articles ', () => {
 
     console.log(res.body.article);
 
-    expect(res.status).toBe(205);
+    expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('article');
   });
 
