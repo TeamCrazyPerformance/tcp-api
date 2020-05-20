@@ -29,8 +29,9 @@ function user(sequelize) {
   };
 
   User.prototype.getProfile = function(needToken) {
-    const { id, avatar, username, githubUsername: github } = this;
-    const token = needToken ? generateJwt({ id, github }) : undefined;
+    const { id, avatar, username, githubUsername: github, membershipId } = this;
+    const isAdmin = membershipId < 3;
+    const token = needToken ? generateJwt({ id, github, isAdmin }) : undefined;
     return {
       id,
       avatar,
