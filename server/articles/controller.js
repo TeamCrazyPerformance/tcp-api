@@ -37,7 +37,7 @@ const createArticle = async (req, res, next) => {
     .then(article => {
       article.setUser(user.id);
       article.setCategory(category);
-      return res.status(205).send({ article });
+      return res.status(201).send({ article });
     })
     .catch(err => next(err));
 };
@@ -75,7 +75,7 @@ const modifyArticle = (req, res, next) => {
 
   article
     .save()
-    .then(() => res.sendStatus(205))
+    .then(() => res.send({ article }))
     .catch(err => next(err));
 };
 
