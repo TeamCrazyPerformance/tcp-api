@@ -5,13 +5,23 @@ import { database as db } from '../config';
 const CLIENT_URI = process.env.CLIENT_URI;
 const STRATEGY = 'github';
 
-const loginHandler = (req, res, next) => {
+export const getUsersHandler = (_, res) => {
+  const { User } = db;
+
+  User.findAll().then(users =>
+    res.status(200).json({
+      users,
+    }),
+  );
+};
+
+export const loginHandler = (req, res, next) => {
   passport.authenticate(STRATEGY, {
     failureRedirect: `${CLIENT_URI}/login`,
   })(req, res, next);
 };
 
-const sendUserHandler = (req, res) => {
+export const sendUserHandler = (req, res) => {
   const { User } = db;
   const { user } = req;
 
@@ -24,7 +34,7 @@ const sendUserHandler = (req, res) => {
   );
 };
 
-const publishToken = (req, res) => {
+export const publishToken = (req, res) => {
   const { user } = req;
   const { needSignup } = user;
   const query = qs.stringify(user);
@@ -33,7 +43,7 @@ const publishToken = (req, res) => {
   res.redirect(path);
 };
 
-const signUpHandler = (req, res, next) => {
+export const signUpHandler = (req, res, next) => {
   if (!req.user.needSignup)
     return res.status(404).send({ message: 'Cannot Signup' });
 
@@ -46,5 +56,3 @@ const signUpHandler = (req, res, next) => {
     next();
   });
 };
-
-export { loginHandler, publishToken, signUpHandler, sendUserHandler };

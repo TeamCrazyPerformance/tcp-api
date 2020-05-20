@@ -1,18 +1,13 @@
 import { Router } from 'express';
-import {
-  signUpHandler,
-  loginHandler,
-  publishToken,
-  sendUserHandler,
-} from './controller';
+import * as ctrl from './controller';
 import authHandler from '../auth';
 
 const router = Router();
 
-router.get('/login', loginHandler);
-router.get('/login/complete', loginHandler, publishToken);
-
-router.use(authHandler);
-router.post('/', signUpHandler, sendUserHandler);
+router
+  .get('/', ctrl.getUsersHandler)
+  .get('/login', ctrl.loginHandler)
+  .get('/login/complete', ctrl.loginHandler, ctrl.publishToken)
+  .post('/', authHandler, ctrl.signUpHandler, ctrl.sendUserHandler);
 
 export default router;
