@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { dbConfig } from './config';
 import Users from '../users/model';
+import Memberships from '../users/memberships/model';
 import Articles from '../articles/model';
 import Comments from '../articles/comments/model';
 import Categorys from '../articles/categorys/model';
@@ -11,16 +12,25 @@ const db = {
   Article: null,
   Comment: null,
   Category: null,
+  Membership: null,
 
   async connect(options) {
     const sequelize = new Sequelize({ ...dbConfig, ...options });
     this.sequelize = sequelize;
+    this.Membership = Memberships(sequelize);
     this.User = Users(sequelize);
     this.Article = Articles(sequelize);
     this.Comment = Comments(sequelize);
     this.Category = Categorys(sequelize);
 
-    const { User, Article, Comment, Category } = this;
+    const { Membership, User, Article, Comment, Category } = this;
+
+    Membership.hasMany(User);
+    User.belongsTo(Membership, {
+      foreignKey: {
+        defaultValue: 4,
+      },
+    });
 
     User.hasMany(Article, {
       foreignKey: 'author',
