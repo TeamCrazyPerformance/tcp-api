@@ -1,17 +1,17 @@
 import { Router } from 'express';
 import * as ctrl from './controller';
-import authHandler from '../../auth';
+import { adminAuth } from '../../auth';
 
 const router = Router();
 
 router
   .route('/')
   .get(ctrl.getCategories)
-  .post(ctrl.createCategory);
+  .post(adminAuth, ctrl.createCategory);
 
 router
   .route('/:categoryId')
-  .all(authHandler)
+  .all(adminAuth)
   .patch(ctrl.updateCategory)
   .delete(ctrl.deleteCategory);
 
