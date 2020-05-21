@@ -72,3 +72,16 @@ export const modifyUserMembershipHandler = async (req, res, next) => {
     .then(user => res.send({ user }))
     .catch(err => next(err));
 };
+
+export const banishUserHandler = async (req, res, next) => {
+  const { User } = db;
+  const { userId } = req.params;
+
+  User.findByPk(userId)
+    .then(user => {
+      if (!user) return res.sendStatus(404);
+      return user.destroy();
+    })
+    .then(() => res.sendStatus(204))
+    .catch(err => next(err));
+};
