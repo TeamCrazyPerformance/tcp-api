@@ -28,6 +28,21 @@ function user(sequelize) {
     return user;
   };
 
+  User.prototype.getInfo = async function() {
+    const { name: membership } = await this.getMembership();
+    const { id, avatar, username, githubUsername: github, blog, email } = this;
+
+    return {
+      id,
+      avatar,
+      username,
+      githubUsername: github,
+      blog,
+      email,
+      membership,
+    };
+  };
+
   User.prototype.getProfile = function(needToken) {
     const { id, avatar, username, githubUsername: github, membershipId } = this;
     const isAdmin = membershipId < 3;

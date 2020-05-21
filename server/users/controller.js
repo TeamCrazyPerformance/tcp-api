@@ -56,3 +56,19 @@ export const signUpHandler = (req, res, next) => {
     next();
   });
 };
+
+export const modifyUserMembershipHandler = async (req, res, next) => {
+  const { User, Membership } = db;
+  const {
+    body: { membership: name },
+    params: { userId },
+  } = req;
+  const where = { name };
+  const membership = await Membership.findOne({ where });
+
+  User.findByPk(userId)
+    .then(user => user.setMembership(membership))
+    .then(user => user.getInfo())
+    .then(user => res.send({ user }))
+    .catch(err => next(err));
+};
