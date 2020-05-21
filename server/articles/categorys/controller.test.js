@@ -7,7 +7,7 @@ const URL = {
   CATEGORYS: `/api/categories`,
 };
 
-const token = generateJwt({ id: 1, name: '김테스트' });
+const token = generateJwt({ id: 1, name: '김테스트', isAdmin: true });
 
 describe('GET /categories ', () => {
   it('GET /categories 카테고리 목록을 반환한다', async () => {
