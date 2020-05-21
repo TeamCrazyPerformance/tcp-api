@@ -54,3 +54,24 @@ describe('PATCH /admin/users/:userid', () => {
     expect(body.user.membership).toBe('TCP멤버');
   });
 });
+
+describe('DELETE /admin/users/:userid', () => {
+  let user;
+
+  beforeAll(async () => {
+    await DB.User.create(MOCK.user).then(mockUser => (user = mockUser));
+  });
+
+  afterAll(async () => {
+    await user.destroy({ force: true });
+  });
+
+  test('성공시 204를 받는다', async done => {
+    const res = await request(server)
+      .delete(`${URL.ADMIN_USERS}/${user.id}`)
+      .set('Authorization', adminToken);
+
+    expect(res.status).toBe(204);
+    done();
+  });
+});
