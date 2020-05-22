@@ -28,24 +28,15 @@ function article(sequelize) {
     { limit = DEFAULT_LIMIT, offset = DEFUALT_OFFSET },
   ) {
     const category = await db.Category.findByPk(categoryId);
+    const notices = await db.Notice.getNotices(categoryId);
+
     const articles = await category
       .getArticles({
         limit: parseInt(limit, 10),
         offset: parseInt(offset, 10),
       })
       .then(articles =>
-        Promise.all(
-          articles.map(async article => {
-            const [author, comments] = await Promise.all([
-              article.getUser(),
-              article.getComments(),
-            ]);
-            return article.extract(false, {
-              author: author.username,
-              commentCount: comments.length,
-            });
-          }),
-        ),
+        Promise.all(articles.map(article => article.getListViewData())),
       );
 
     const where = { categoryId: category.id };
@@ -53,7 +44,18 @@ function article(sequelize) {
       where,
     });
 
-    return [articles, articleCounts];
+    return [articles, articleCounts, notices];
+  };
+
+  Article.prototype.getListViewData = async function() {
+    const [author, comments] = await Promise.all([
+      this.getUser(),
+      this.getComments(),
+    ]);
+    return this.extract(false, {
+      author: author.username,
+      commentCount: comments.length,
+    });
   };
 
   Article.prototype.updateViewCount = async function() {

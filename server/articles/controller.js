@@ -49,8 +49,8 @@ const getArticles = (req, res) => {
   Article.filterCategory(category, {
     limit,
     offset,
-  }).then(([articles, articlesCount]) => {
-    res.send({ articles, articlesCount });
+  }).then(([articles, articlesCount, notices]) => {
+    res.send({ articles, articlesCount, notices });
   });
 };
 
