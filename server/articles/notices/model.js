@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
 
-const type = {
-  1: '전체',
-  2: '게시판',
+const TYPE = {
+  전체: 1,
+  게시판: 2,
 };
 
 function notice(sequelize) {
@@ -18,6 +18,12 @@ function notice(sequelize) {
     },
   );
 
+  Notice.createNotice = function(notice) {
+    notice.type = TYPE[notice.type];
+
+    return Notice.create(notice);
+  };
+
   Notice.getNotices = function(categoryId) {
     categoryId = Number.parseInt(categoryId, 10);
 
@@ -32,7 +38,7 @@ function notice(sequelize) {
             const article = await noticeArticle.getListViewData();
 
             return {
-              type: type[notice.type],
+              type: TYPE[notice.type],
               article,
             };
           }),
