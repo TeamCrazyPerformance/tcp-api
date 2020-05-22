@@ -13,10 +13,11 @@ const MOCK = {
 };
 
 const token = generateJwt({ id: 1, name: '김테스트' });
+const adminToken = generateJwt({ id: 3, name: '김테스트', isAdmin: true });
 
 describe('POST /articles ', () => {
   afterAll(async done => {
-    const where = { ...MOCK.article };
+    const where = MOCK.article;
     DB.Article.findOne({ where })
       .then(article => article.destroy({ force: true }))
       .then(done);
@@ -84,6 +85,38 @@ describe('GET /articles?category=name ', () => {
     expect(res.body).toHaveProperty('articles');
     expect(res.body).toHaveProperty('articlesCount');
     expect(res.body).toHaveProperty('notices');
+
+    done();
+  });
+});
+
+describe('DELETE /articles/:articleId ', () => {
+  let article;
+
+  beforeAll(async () => {
+    article = await DB.Article.create({ author: 2, ...MOCK.article });
+  });
+
+  afterAll(async () => {
+    await article.destroy({ force: true });
+  });
+
+  it('내가 쓴 글이 아닌 경우 403을 받는다 ', async done => {
+    const res = await request(server)
+      .delete(`${URL.ARTICLE}/${article.id}`)
+      .set('Authorization', token);
+
+    expect(res.status).toBe(403);
+
+    done();
+  });
+
+  it('관리자의 경우 삭제 가능하다. 204를 받는다. ', async done => {
+    const res = await request(server)
+      .delete(`${URL.ARTICLE}/${article.id}`)
+      .set('Authorization', adminToken);
+
+    expect(res.status).toBe(204);
 
     done();
   });
