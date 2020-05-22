@@ -5,6 +5,7 @@ import Memberships from '../users/memberships/model';
 import Articles from '../articles/model';
 import Comments from '../articles/comments/model';
 import Categorys from '../articles/categorys/model';
+import Notices from '../articles/notices/model';
 
 const db = {
   sequelize: null,
@@ -12,6 +13,7 @@ const db = {
   Article: null,
   Comment: null,
   Category: null,
+  Notice: null,
   Membership: null,
 
   async connect(options) {
@@ -22,8 +24,9 @@ const db = {
     this.Article = Articles(sequelize);
     this.Comment = Comments(sequelize);
     this.Category = Categorys(sequelize);
+    this.Notice = Notices(sequelize);
 
-    const { Membership, User, Article, Comment, Category } = this;
+    const { Membership, User, Article, Comment, Category, Notice } = this;
 
     Membership.hasMany(User);
     User.belongsTo(Membership, {
@@ -52,6 +55,9 @@ const db = {
     Article.belongsTo(Category, {
       foreignKey: 'categoryId',
     });
+
+    // Article.hasOne(Notice);
+    Notice.belongsTo(Article);
 
     Category.belongsTo(Category, {
       foreignKey: 'parent',
