@@ -18,7 +18,7 @@ describe('POST /articles ', () => {
   afterAll(async done => {
     const where = { ...MOCK.article };
     DB.Article.findOne({ where })
-      .then(article => article.destroy())
+      .then(article => article.destroy({ force: true }))
       .then(done);
   });
 
@@ -29,8 +29,6 @@ describe('POST /articles ', () => {
       .post(URL.ARTICLE)
       .set('Authorization', token)
       .send(MOCK);
-
-    console.log(res.body.article);
 
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('article');
@@ -71,5 +69,22 @@ describe('POST /articles ', () => {
       });
 
     expect(res.status).toBe(400);
+  });
+});
+
+describe('GET /articles?category=name ', () => {
+  it('해당 카테고리의 게시글과 공지를 반환한다 ', async done => {
+    expect.assertions(4);
+
+    const res = await request(server)
+      .get(`${URL.ARTICLE}?category=1`)
+      .set('Authorization', token);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('articles');
+    expect(res.body).toHaveProperty('articlesCount');
+    expect(res.body).toHaveProperty('notices');
+
+    done();
   });
 });
