@@ -56,8 +56,12 @@ const db = {
       foreignKey: 'categoryId',
     });
 
-    // Article.hasOne(Notice);
-    Notice.belongsTo(Article);
+    Article.hasMany(Notice, {
+      foreignKey: 'articleId',
+    });
+    Notice.belongsTo(Article, {
+      foreignKey: 'articleId',
+    });
 
     Category.belongsTo(Category, {
       foreignKey: 'parent',
