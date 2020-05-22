@@ -14,10 +14,9 @@ const preloadArticle = (req, res, next, articleId) => {
     .catch(() => res.sendStatus(500));
 };
 
-//TODO 관리자 계정 Auth 추가하기
 const articleAuth = (req, res, next) => {
   const { user, article } = req;
-  if (user.id !== article.author) res.sendStatus(401);
+  if (user.id !== article.author && !user.isAdmin) return res.sendStatus(403);
 
   next();
 };
@@ -84,7 +83,7 @@ const deleteArticle = (req, res, next) => {
 
   article
     .destroy()
-    .then(() => res.sendStatus(205))
+    .then(() => res.sendStatus(204))
     .catch(err => next(err));
 };
 
